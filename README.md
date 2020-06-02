@@ -1,6 +1,8 @@
 cassandra
 =========
 
+[![Build Status](https://travis-ci.com/fidanf/ansible-role-cassandra.svg?branch=master)](https://travis-ci.com/fidanf/ansible-role-cassandra)
+
 Install and configures Apache Cassandra 3.x along with a JMX Prometheus exporter on **Debian/Ubuntu**.
 
 Tested with :
