@@ -1,0 +1,41 @@
+---
+- name: Ensure cassandra_seeds is defined
+  assert:
+    that: cassandra_seeds and cassandra_seeds|length > 0
+    fail_msg: List variable cassandra_seeds must be set!
+
+- name: Ensure dnspython and netaddr libraries are installed on the local master node
+  pip:
+    name: ['netaddr', 'dnspython']
+    state: present
+  delegate_to: 127.0.0.1
+  tags: ['requirements']
+
+- name: Detect node IP
+  set_fact:
+    cassandra_node_ip: "{{ ansible_host if ansible_host|ipv4 else lookup('dig', inventory_hostname) }}"
+  when: cassandra_node_ip is not defined
+
+- name: Setup APT and install package
+  import_tasks: _apt.yml
+  tags: ['apt']
+
+- name: Configure and restart cassandra
+  import_tasks: _config.yml
+  tags: ['configure']
+
+- name: Install cassandra-exporter
+  import_tasks: _exporter.yml
+  tags: ['exporter']
+
+- name: Compute JVM requirements
+  import_tasks: _jvm.yml
+  tags: ['jvm']
+
+- name: Rolling restart
+  include_tasks: 
+    file: _restart.yml
+    apply: { tags: ['restart', 'molecule-idempotence-notest'] }
+  loop: "{{ ansible_play_batch }}"
+  when: cassandra_restart_enabled|bool
+  tags: always

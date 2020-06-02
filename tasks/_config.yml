@@ -1,0 +1,41 @@
+---
+- name: Apply Cassandra Configuration
+  template:
+    src: cassandra.yaml.j2
+    dest: /etc/cassandra/cassandra.yaml
+    owner: root
+    group: root
+    mode: 0644
+  register: apply_config
+
+- name: Set the DC for Cassandra
+  lineinfile:
+    dest: "{{ cassandra_configuration_file_path | dirname }}/cassandra-rackdc.properties"
+    regexp: '^dc='
+    line: "dc={{ cassandra_dc }}"
+  register: set_dc
+
+- name: Set the Rack for Cassandra
+  lineinfile:
+    dest: "{{ cassandra_configuration_file_path | dirname }}/cassandra-rackdc.properties"
+    regexp: '^rack='
+    line: "rack={{ cassandra_rack }}"
+  register: set_rack
+
+- name: Prune old system config
+  shell: rm -rf /var/lib/cassandra/data/system/*
+  args:
+    warn: no
+  when: apply_config is changed or set_dc is changed or set_rack is changed
+
+- block:
+    - name: Disable swap
+      shell: swapoff -a
+
+    - name: Remove swap space
+      lineinfile:
+        path: /etc/fstab
+        regex: swap
+        state: absent
+  when: cassandra_disable_swap
+  tags: molecule-idempotence-notest

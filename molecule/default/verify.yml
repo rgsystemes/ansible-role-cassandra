@@ -1,0 +1,14 @@
+---
+- hosts: cassandra
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Run nodetool status
+      shell: nodetool status
+      register: nodetool_status
+
+    - name: Debug
+      debug:
+        msg:
+          "nodetool_status": "{{ nodetool_status.stdout_lines }}"

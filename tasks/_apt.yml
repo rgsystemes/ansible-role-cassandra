@@ -1,0 +1,51 @@
+---
+- name: Install apt dependencies
+  apt:
+    name: gnupg
+    state: present
+
+# See: http://cassandra.apache.org/download/
+- name: Add the Apache Cassandra repository keys
+  apt_key:
+    url: https://www.apache.org/dist/cassandra/KEYS
+    state: present
+
+- name: Configure the Apache Cassandra Apt Repository
+  apt_repository:
+    filename: /etc/apt/sources.list.d/cassandra.sources
+    repo: "deb http://www.apache.org/dist/cassandra/debian {{ cassandra_repo_apache_release }} main"
+    state: present
+
+- name: Add the Apache apt public key
+  apt_key:
+    keyserver: pool.sks-keyservers.net
+    id: A278B781FE4B2BDA
+  register: cassandra_remote_status
+  until: cassandra_remote_status is succeeded
+  delay: "{{ cassandra_task_delay }}"
+  retries: "{{ cassandra_task_retries }}"
+
+- name: Install the Cassandra Package (Apt)
+  apt:
+    update_cache: yes
+    name: cassandra
+    state: present
+  register: install_cassandra
+
+- name: Fix init.d script # https://issues.apache.org/jira/browse/CASSANDRA-15770
+  lineinfile:
+    path: /etc/init.d/cassandra
+    regexp: '^.*start-stop-daemon -K.*$'
+    line: '    start-stop-daemon -K -u cassandra -p "$PIDFILE" -R TERM/30/KILL/5 >/dev/null'
+  when:
+    - cassandra_15770_workaround | bool
+    - ansible_distribution_release in ['buster', 'focal']
+
+- name: Shutdown process started from first install
+  systemd:
+    name: cassandra
+    state: stopped
+    enabled: yes
+    daemon_reload: yes
+  when: install_cassandra.changed
+  tags: skip_ansible_lint

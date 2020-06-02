@@ -1,0 +1,35 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: no
+
+  pre_tasks:
+    - name: Wait for SSH
+      wait_for_connection:
+
+    - name: Gather facts for first time
+      setup:
+
+    - name: Install python for Ansible
+      apt: 
+        name: "{{ item.packages }}"
+        update_cache: yes
+      become: true
+      when: item.dist == ansible_distribution_release
+      loop:
+        - dist: focal
+          packages: 
+            - python3-apt
+        - dist: bionic
+          packages:
+            - python-minimal
+            - python-apt
+
+  roles:
+    - name: gantsign.java
+      vars:
+        java_version: 'jdk8u242-b08'
+        java_is_default_installation: yes
+        java_use_local_archive: no
+        java_install_dir: '/opt/java'
+      tags: ['dependencies', 'java']

@@ -1,0 +1,85 @@
+---
+- name: Calculate cassandra_cms_max_heapsize_mb
+  set_fact:
+    cassandra_cms_max_heapsize_mb: "{{
+      [
+        ([ansible_memtotal_mb * 0.5, 1024] | min),
+        ([ansible_memtotal_mb * 0.25, 14336] | min)
+      ] | max | round | int }}"
+  when:
+    - ansible_memtotal_mb is defined
+    - cassandra_cms_max_heapsize_mb is not defined
+
+- name: Calculate cassandra_max_heapsize_mb
+  set_fact:
+    cassandra_max_heapsize_mb: "{{
+      [
+        ([ansible_memtotal_mb * 0.5, 1024] | min),
+        ([ansible_memtotal_mb * 0.25, 8192] | min)
+      ] | max | round | int }}"
+  when:
+    - ansible_memtotal_mb is defined
+    - cassandra_max_heapsize_mb is not defined
+
+- name: Calculate cassandra_cms_heap_new_size_mb
+  set_fact:
+    cassandra_cms_heap_new_size_mb: "{{
+      [
+        (ansible_processor_vcpus * 100.0),
+        ((cassandra_cms_max_heapsize_mb | int) * 0.25)
+      ] | min | round | int }}"
+  when:
+    - ansible_memtotal_mb is defined
+    - ansible_processor_vcpus is defined
+    - cassandra_cms_heap_new_size_mb is not defined
+
+- name: Calculate cassandra_heap_new_size_mb
+  set_fact:
+    cassandra_heap_new_size_mb: "{{
+      [
+        (ansible_processor_vcpus * 100.0),
+        ((cassandra_max_heapsize_mb | int) * 0.25)
+      ] | min | round | int }}"
+  when:
+    - ansible_memtotal_mb is defined
+    - ansible_processor_vcpus is defined
+    - cassandra_heap_new_size_mb is not defined
+
+- name: Debug Custom Facts
+  debug:
+    msg: {
+      'ansible_memtotal_mb': "{{ ansible_memtotal_mb }}",
+      'ansible_processor_vcpus': "{{ ansible_processor_vcpus }}",
+      'cassandra_cms_heap_new_size_mb': "{{ cassandra_cms_heap_new_size_mb }}",
+      'cassandra_cms_max_heapsize_mb': "{{ cassandra_cms_max_heapsize_mb }}",
+      'cassandra_heap_new_size_mb': "{{ cassandra_heap_new_size_mb }}",
+      'cassandra_max_heapsize_mb': "{{ cassandra_max_heapsize_mb }}"
+    }
+    verbosity: 1
+  when:
+    - ansible_memtotal_mb is defined
+    - ansible_processor_vcpus is defined
+
+- name: Set cassandra_max_heapsize_mb (min value)
+  lineinfile:
+    dest: "{{ cassandra_base_path }}/jvm.options"
+    regexp: "^#?-Xms"
+    backrefs: yes
+    line: "-Xms{{ cassandra_max_heapsize_mb }}M"
+    state: present
+
+- name: Set cassandra_max_heapsize_mb (max value)
+  lineinfile:
+    dest: "{{ cassandra_base_path }}/jvm.options"
+    regexp: "^#?-Xmx"
+    backrefs: yes
+    line: "-Xmx{{ cassandra_max_heapsize_mb }}M"
+    state: present
+    
+- name: Set cassandra_heap_new_size_mb
+  lineinfile:
+    dest: "{{ cassandra_base_path }}/jvm.options"
+    regexp: "^#?-Xmn"
+    backrefs: yes
+    line: "-Xmn{{ cassandra_heap_new_size_mb }}M"
+    state: present

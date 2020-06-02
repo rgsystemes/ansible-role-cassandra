@@ -1,0 +1,17 @@
+---
+- name: cassandra-exporter | Download .jar file
+  get_url: 
+    url: "{{ cassandra_exporter_release_url }}"
+    dest: "{{ cassandra_base_path }}/jmx_prometheus_javaagent-{{ cassandra_exporter_release_version }}.jar"
+
+- name: cassandra-exporter | Copy exporter config
+  copy:
+    src: prometheus_java_exporter.yml
+    dest: "{{ cassandra_base_path }}/prometheus_java_exporter.yml"
+
+- name: cassandra-exporter | Update cassandra-env.sh
+  lineinfile:
+    path: "{{ cassandra_base_path }}/cassandra-env.sh"
+    regex: ^JVM_OPTS="$JVM_OPTS -javaagent
+    line: "{{ cassandra_exporter_jvm_opts }}"
+    state: present

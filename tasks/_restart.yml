@@ -1,0 +1,28 @@
+---
+- block:
+    - name: Get node status
+      shell: nodetool status
+      ignore_errors: yes
+      register: nodetool_status
+
+    - name: Drain node if it was running
+      shell: nodetool drain
+      when: nodetool_status.rc == 0 and not nodetool_status.stderr
+
+    - name: Restart service
+      service:
+        name: "{{ cassandra_service_name }}"
+        state: restarted
+        enabled: yes
+
+    - name: Ensure JMX port is up and running
+      wait_for:
+        port: 7199
+        timeout: 60
+
+    - name: Ensure CQL port is up and running
+      wait_for:
+        port: 9042
+        timeout: 60
+  when: inventory_hostname == item
+  tags: molecule-idempotence-notest
