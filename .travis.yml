@@ -45,6 +45,5 @@ script:
     && sudo -E molecule create \
     && sudo -E molecule prepare \
     && sudo -E molecule converge \
-    && sudo -E molecule idempotence \
     && sudo -E molecule verify \
     && sudo -E molecule destroy

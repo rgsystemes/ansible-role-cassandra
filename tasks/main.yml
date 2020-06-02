@@ -38,4 +38,4 @@
     apply: { tags: ['restart', 'molecule-idempotence-notest'] }
   loop: "{{ ansible_play_batch }}"
   when: cassandra_restart_enabled|bool
-  tags: always
+  tags: ['always', 'skip-ansible-lint']
