@@ -90,7 +90,7 @@ Example playbook
         path: "{{ ansible_local.java.general.home }}/bin/java"
         priority: 1
     - import_role: 
-        name: rgsystem.cassandra
+        name: fidanf.cassandra
 
 ```
 
