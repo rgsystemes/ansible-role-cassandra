@@ -7,7 +7,7 @@
 # See: http://cassandra.apache.org/download/
 - name: Add the Apache Cassandra repository keys
   apt_key:
-    url: https://www.apache.org/dist/cassandra/KEYS
+    url: https://downloads.apache.org/cassandra/KEYS
     state: present
 
 - name: Configure the Apache Cassandra Apt Repository
@@ -15,15 +15,6 @@
     filename: /etc/apt/sources.list.d/cassandra.sources
     repo: "deb http://www.apache.org/dist/cassandra/debian {{ cassandra_repo_apache_release }} main"
     state: present
-
-- name: Add the Apache apt public key
-  apt_key:
-    keyserver: pool.sks-keyservers.net
-    id: A278B781FE4B2BDA
-  register: cassandra_remote_status
-  until: cassandra_remote_status is succeeded
-  delay: "{{ cassandra_task_delay }}"
-  retries: "{{ cassandra_task_retries }}"
 
 - name: Install the Cassandra Package (Apt)
   apt:
