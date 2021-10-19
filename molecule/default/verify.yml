@@ -5,8 +5,12 @@
 
   tasks:
     - name: Run nodetool status
-      shell: nodetool status
+      shell: 
+        cmd: nodetool status
       register: nodetool_status
+      until: nodetool_status is succeeded
+      retries: 5
+      delay: 10
 
     - name: Debug
       debug:
