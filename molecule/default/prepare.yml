@@ -28,7 +28,7 @@
   roles:
     - name: gantsign.java
       vars:
-        java_version: 'jdk8u242-b08'
+        java_version: 8
         java_is_default_installation: yes
         java_use_local_archive: no
         java_install_dir: '/opt/java'
