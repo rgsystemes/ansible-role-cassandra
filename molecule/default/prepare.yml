@@ -30,6 +30,4 @@
       vars:
         java_version: 8
         java_is_default_installation: yes
-        java_use_local_archive: no
-        java_install_dir: '/opt/java'
       tags: ['dependencies', 'java']
