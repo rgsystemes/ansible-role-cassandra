@@ -8,6 +8,9 @@
   copy:
     src: prometheus_java_exporter.yml
     dest: "{{ cassandra_base_path }}/prometheus_java_exporter.yml"
+    owner: root
+    group: root
+    mode: 0644
 
 - name: cassandra-exporter | Update cassandra-env.sh
   lineinfile:
