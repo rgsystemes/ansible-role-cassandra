@@ -15,7 +15,7 @@ driver:
       - -o ControlPersist 1h
 platforms:
   - name: cass01
-    box: ${MOLECULE_DISTRO:-"generic/ubuntu1804"}
+    box: ${MOLECULE_DISTRO:-"generic/ubuntu2004"}
     groups: ['cassandra']
     instance_raw_config_args:
       - 'vm.hostname = "cass01"'
@@ -30,7 +30,7 @@ platforms:
         ip: 192.168.30.2
         auto_config: true
   - name: cass02
-    box: ${MOLECULE_DISTRO:-"generic/ubuntu1804"}
+    box: ${MOLECULE_DISTRO:-"generic/ubuntu2004"}
     instance_raw_config_args:
       - 'vm.hostname = "cass02"'
       - 'ssh.keep_alive = true'
