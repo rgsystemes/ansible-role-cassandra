@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  namespace: fidanf
   role_name: cassandra
   author: Frank Fidanza <frank.fidanza@rgsystem.com>
   description: Install and configures Apache Cassandra 3.x along with a JMX Prometheus exporter on **Debian/Ubuntu**.  
