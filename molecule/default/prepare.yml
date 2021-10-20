@@ -32,3 +32,12 @@
         java_use_local_archive: no
         java_is_default_installation: yes
       tags: ['dependencies', 'java']
+
+  post_tasks:
+    - name: Ensure correct java version is selected
+      alternatives:
+        link: /usr/bin/java
+        name: java
+        path: "{{ ansible_local.java.general.home }}/bin/java"
+        priority: 1
+      become: yes
