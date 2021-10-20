@@ -4,18 +4,6 @@
     that: cassandra_seeds and cassandra_seeds|length > 0
     fail_msg: List variable cassandra_seeds must be set!
 
-- name: Ensure dnspython and netaddr libraries are installed on the local master node
-  pip:
-    name: ['netaddr', 'dnspython']
-    state: present
-  delegate_to: 127.0.0.1
-  tags: ['requirements']
-
-- name: Detect node IP
-  set_fact:
-    cassandra_node_ip: "{{ ansible_host if ansible_host|ipv4 else lookup('dig', inventory_hostname) }}"
-  when: cassandra_node_ip is not defined
-
 - name: Setup APT and install package
   import_tasks: _apt.yml
   tags: ['apt']

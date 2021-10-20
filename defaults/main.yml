@@ -13,7 +13,6 @@ cassandra_log_dir: /var/log/cassandra
 # cassandra-rackdc.properties
 cassandra_dc: DC1
 cassandra_rack: RACK1
-
 # cassandra.yaml
 cassandra_cluster_name: AcmeCluster
 cassandra_num_tokens: 16
@@ -21,12 +20,11 @@ cassandra_endpoint_snitch: GossipingPropertyFileSnitch
 cassandra_enable_materialized_views: false
 cassandra_enable_sasi_indexes: false
 cassandra_seeds: []
-# cassandra_node_ip: 
-
+# cassandra_listen_address: '' # Defaults to ansible_host if undefined
+# cassandra_rpc_address: '' # Defaults to ansible_host if undefined
 # exporter
-cassandra_exporter_release_version: 0.12.0
+cassandra_exporter_release_version: 0.14.0
 cassandra_exporter_release_url: "https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{ cassandra_exporter_release_version }}/jmx_prometheus_javaagent-{{ cassandra_exporter_release_version }}.jar"
 cassandra_exporter_jvm_opts: "JVM_OPTS=\"$JVM_OPTS -javaagent:{{ cassandra_base_path }}/jmx_prometheus_javaagent-{{ cassandra_exporter_release_version }}.jar=7070:{{ cassandra_base_path }}/prometheus_java_exporter.yml\""
-
 # restart
 cassandra_restart_enabled: yes
