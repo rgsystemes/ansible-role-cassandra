@@ -43,7 +43,7 @@ Example playbook
   roles:
     - name: gantsign.java
       vars:
-        java_version: 8
+        java_version: 8.0.302+8
         java_is_default_installation: yes
     - name: fidanf.cassandra
       vars:
