@@ -28,9 +28,7 @@
     path: /etc/init.d/cassandra
     regexp: '^.*start-stop-daemon -K.*$'
     line: '    start-stop-daemon -K -u cassandra -p "$PIDFILE" -R TERM/30/KILL/5 >/dev/null'
-  when:
-    - cassandra_15770_workaround | bool
-    - ansible_distribution_release in ['buster', 'focal']
+  when: cassandra_15770_workaround|bool
 
 - name: Shutdown process started from first install
   systemd:
