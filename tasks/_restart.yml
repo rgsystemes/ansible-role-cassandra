@@ -30,18 +30,18 @@
         enabled: yes
       when: ansible_facts.services[cassandra_service_name].state in ['failed', 'stopped']
 
-    - name: Ensure service is up and running 1/2
+    - name: Ensure service is up and running
       wait_for:
         path: "{{ cassandra_log_dir }}/system.log"
         search_regex: Startup complete
         delay: 10
-        timeout: 30
+        timeout: 120
 
-    - name: Ensure service is up and running 2/2
+    - name: Ensure JMX port is listening
       wait_for:
-        path: "{{ cassandra_log_dir }}/debug.log"
-        search_regex: Startup complete
+        host: 127.0.0.1
+        port: 7199
         delay: 10
-        timeout: 30
+        timeout: 120
   when: inventory_hostname == item
   tags: molecule-idempotence-notest
