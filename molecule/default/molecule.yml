@@ -15,8 +15,9 @@ driver:
       - -o ControlPersist 1h
 platforms:
   - name: cass01
-    box: ${MOLECULE_DISTRO:-"generic/ubuntu1804"}
-    groups: ['cassandra']
+    box: ${MOLECULE_DISTRO:-"generic/ubuntu2004"}
+    groups: 
+      - cassandra
     instance_raw_config_args:
       - 'vm.hostname = "cass01"'
       - 'ssh.keep_alive = true'
@@ -30,13 +31,14 @@ platforms:
         ip: 192.168.30.2
         auto_config: true
   - name: cass02
-    box: ${MOLECULE_DISTRO:-"generic/ubuntu1804"}
+    box: ${MOLECULE_DISTRO:-"generic/ubuntu2004"}
     instance_raw_config_args:
       - 'vm.hostname = "cass02"'
       - 'ssh.keep_alive = true'
       - 'ssh.forward_agent = true'
       - 'ssh.insert_key = false'
-    groups: ['cassandra']
+    groups: 
+      - cassandra
     memory: 1024
     cpus: 1
     interfaces:
@@ -49,22 +51,16 @@ provisioner:
   log: true
   inventory:
     group_vars:
+      ansible_user: vagrant
+      ansible_ssh_private_key_file: ~/.vagrant.d/insecure_private_key
       cassandra:
         cassandra_seeds:
           - 192.168.30.2
     host_vars:
       cass01:
-        ansible_user: vagrant
-        ansible_private_key: ~/.vagrant.d/insecure_private_key
-        ansible_ssh_port: 22
         ansible_host: 192.168.30.2
-        cassandra_node_ip: 192.168.30.2
       cass02:
-        ansible_user: vagrant
-        ansible_private_key: ~/.vagrant.d/insecure_private_key
-        ansible_ssh_port: 22
         ansible_host: 192.168.30.3
-        cassandra_node_ip: 192.168.30.3
   config_options:
     defaults:
-      callback_whitelist: "profile_tasks,timer"
+      callback_whitelist: profile_tasks,timer

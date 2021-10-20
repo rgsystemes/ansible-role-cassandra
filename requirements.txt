@@ -1,11 +1,9 @@
-ansible>=2.9.5
-ansible-lint
-yamllint
-docker
-docker-compose
-molecule>=3.0.4
-molecule-vagrant
+ansible>=2.10.7,<2.11.0
+molecule>=3.2,<3.3
+molecule-vagrant==0.6.1
+ansible-lint==4.3.7
+yamllint==1.26.0
+python-vagrant
 netaddr
 dnspython
-python-vagrant
 cryptography
