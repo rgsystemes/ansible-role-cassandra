@@ -39,3 +39,11 @@
         state: absent
   when: cassandra_disable_swap
   tags: molecule-idempotence-notest
+
+- name: Add/replace lines in configuration files
+  lineinfile:
+    line: "{{ item.line }}"
+    path: "{{ cassandra_configuration_file_path | dirname }}/{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+  loop: "{{ cassandra_regex_replacements }}"
+  when: cassandra_regex_replacements | length > 0

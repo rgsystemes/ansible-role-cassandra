@@ -22,6 +22,7 @@ cassandra_enable_sasi_indexes: false
 cassandra_seeds: []
 # cassandra_listen_address: '' # Defaults to ansible_host if undefined
 # cassandra_rpc_address: '' # Defaults to ansible_host if undefined
+cassandra_regex_replacements: []
 # exporter
 cassandra_exporter_release_version: 0.14.0
 cassandra_exporter_release_url: "https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{ cassandra_exporter_release_version }}/jmx_prometheus_javaagent-{{ cassandra_exporter_release_version }}.jar"
