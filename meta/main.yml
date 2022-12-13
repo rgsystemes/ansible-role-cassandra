@@ -1,8 +1,8 @@
 ---
 galaxy_info:
-  namespace: fidanf
+  namespace: rgsystemes
   role_name: cassandra
-  author: Frank Fidanza <frank.fidanza@rgsystem.com>
+  author: Frank Fidanza
   description: Install and configures Apache Cassandra 3.x along with a JMX Prometheus exporter on **Debian/Ubuntu**.  
   min_ansible_version: 2.9
   license: MIT
