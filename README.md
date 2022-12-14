@@ -1,8 +1,6 @@
 cassandra
 =========
 
-[![Build Status](https://travis-ci.com/fidanf/ansible-role-cassandra.svg?branch=master)](https://travis-ci.com/fidanf/ansible-role-cassandra)
-
 Install and configures **Apache Cassandra 3.x** along with a JMX Prometheus exporter on **Debian/Ubuntu**.
 
 Tested with :
@@ -45,7 +43,7 @@ Example playbook
       vars:
         java_version: 8.0.302+8
         java_is_default_installation: yes
-    - name: fidanf.cassandra
+    - name: rgsystemes.cassandra
       vars:
         cassandra_seeds: 
           - cass01
